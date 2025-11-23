@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mosscat Studios</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- HOMESTUCK FONT: Courier Prime (mimics Courier New Bold used in MSPA) -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-dark: #0d1117;
+            --bg-panel: #1c1c1c;
+            --text-main: #e6edf3;
+            --text-dim: #8b949e;
+            
+            /* PALETTE - Nature/Explosion Themed */
+            --sbur-green: #00ff41; /* Terminal Green */
+            --alert-red: #ff3333; 
+            --bucket-gray: #6d6d6d;
+            --fire-orange: #ff7e21;
+            --fire-yellow: #ffd166;
+            
+            /* VIRIDIS PALETTE */
+            --viridis-mold: #2e8b57;
+            --viridis-slime: #32cd32;
+            --viridis-deep: #0a1a0a;
+
+            --font-stack: 'Courier Prime', 'Courier New', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-stack);
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-stack);
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        a { text-decoration: none; color: inherit; transition: color 0.2s; cursor: pointer; }
+        ul { list-style: none; }
+
+        /* --- UTILITIES --- */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        
+        .pixel-btn {
+            display: inline-block;
+            background: #cccccc;
+            color: #000000;
+            padding: 10px 15px;
+            font-family: var(--font-stack);
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid #444;
+            box-shadow: 3px 3px 0px #888;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            margin-top: 1rem;
+            position: relative; 
+            z-index: 10;
+        }
+
+        .pixel-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #888;
+            background: var(--fire-orange);
+            color: #fff;
+            border-color: #b35500;
+        }
+
+        .pixel-btn:active { transform: translate(3px, 3px); box-shadow: none; }
+        
+        .text-center { text-align: center; }
+        .shake { display: inline-block; animation: shake 0.2s infinite; }
+        
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            25% { transform: translate(-1px, -1px) rotate(-1deg); }
+            50% { transform: translate(1px, -1px) rotate(1deg); }
+            75% { transform: translate(-1px, 1px) rotate(0deg); }
+            100% { transform: translate(1px, -1px) rotate(-1deg); }
+        }
+
+        /* --- HEADER & NAV --- */
+        header {
+            background: #1a1a1a;
+            border-bottom: 4px solid var(--bucket-gray);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10000;
+        }
+
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
+
+        .logo {
+            font-family: var(--font-stack);
+            color: var(--sbur-green);
+            font-size: 1.4rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .logo span { color: #fff; }
+
+        .nav-links { display: flex; gap: 20px; }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            font-family: var(--font-stack);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            cursor: pointer;
+            padding: 5px 10px;
+            text-transform: uppercase;
+        }
+
+        .nav-btn:hover { color: var(--fire-orange); text-decoration: underline; }
+        
+        .nav-btn.active {
+            color: var(--fire-yellow);
+            text-decoration: line-through; 
+        }
+
+        /* Mobile Nav Checkbox Hack */
+        .menu-toggle { display: none; }
+        .hamburger { display: none; cursor: pointer; font-size: 2rem; user-select: none; }
+
+        /* --- TABS LOGIC --- */
+        .tab-content {
+            display: none;
+            flex: 1;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- HOME TAB --- */
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            position: relative;
+            text-align: center;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .hero-content {
+            z-index: 5;
+            background: #efefef;
+            color: #000;
+            padding: 20px;
+            border: 2px solid #000;
+            max-width: 650px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- CAMPSIGHT TAB --- */
+        .game-section {
+            padding: 40px 0;
+            background-color: var(--bg-panel);
+            min-height: 80vh;
+            border-top: 10px solid var(--sbur-green);
+        }
+
+        .game-intro {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+            margin-bottom: 60px;
+        }
+
+        /* shat Tablet Styling - Chatlog */
+        .shat-tablet {
+            background: #808080;
+            padding: 10px;
+            border-radius: 0;
+            border: 2px solid #000;
+            transform: rotate(-1deg);
+            margin-top: 20px;
+        }
+
+        .shat-screen {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            font-family: var(--font-stack);
+            min-height: 300px;
+            border: 2px inset #555;
+            overflow-y: auto;
+        }
+        
+        .pester-handle { font-weight: bold; margin-right: 5px; }
+        .pester-text { margin-bottom: 10px; display: block; }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .screenshot-placeholder {
+            background: #000;
+            aspect-ratio: 16/9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #444;
+            padding: 20px;
+            transition: transform 0.2s;
+            text-align: center;
+        }
+
+        .screenshot-placeholder:hover {
+            transform: scale(1.02);
+            border-color: var(--fire-orange);
+        }
+
+        .icon-large { font-size: 3rem; margin-bottom: 10px; }
+
+        /* --- VIRIDIS TAB --- */
+        .viridis-section {
+            background: var(--viridis-deep);
+            color: #8fbc8f;
+            padding: 60px 0;
+            min-height: 80vh;
+            border-top: 10px solid var(--viridis-mold);
+        }
+
+        .viridis-q-mark {
+            font-size: 8rem; 
+            color: var(--viridis-slime); 
+            text-shadow: 5px 5px 0px #004d00;
+            filter: drop-shadow(0 0 5px var(--viridis-slime));
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .lore-box {
+            background: #050f05; 
+            border: 2px dashed var(--viridis-mold); 
+            padding: 30px; 
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        /* --- TEAM TAB --- */
+        .about-section {
+            padding: 60px 0;
+            background: #111;
+            text-align: center;
+            min-height: 80vh;
+        }
+
+        .team-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .dev-card {
+            background: #efefef;
+            color: #000;
+            border: 2px solid #000;
+            padding: 20px;
+            width: 250px;
+            border-radius: 10px; 
+            position: relative;
+        }
+
+        .dev-avatar {
+            width: 100px; height: 100px;
+            background: #fff;
+            margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; border: 1px solid #ccc;
+        }
+
+        /* --- CONTACT TAB --- */
+        .contact-section {
+            padding: 60px 0;
+            background: #000;
+            text-align: center;
+            min-height: 80vh;
+        }
+
+        .mailing-list {
+            background: #2c2c2c;
+            padding: 40px;
+            display: inline-block;
+            border: 2px dashed var(--sbur-green);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .input-pixel {
+            background: #fff;
+            border: 2px solid #000;
+            color: #000;
+            padding: 15px;
+            font-family: var(--font-stack);
+            font-weight: bold;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* --- GLOBAL FOOTER --- */
+        .global-footer {
+            background: #111;
+            padding: 20px 0;
+            border-top: 1px solid #333;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: auto;
+            z-index: 100;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hamburger { display: block; color: #fff; }
+            
+            .nav-links {
+                position: absolute;
+                top: 60px; left: 0; width: 100%;
+                background: #111;
+                flex-direction: column;
+                align-items: center;
+                gap: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-out;
+                border-bottom: 2px solid var(--sbur-green);
+                z-index: 9999;
+            }
+
+            .nav-btn {
+                width: 100%;
+                padding: 20px;
+                text-align: center;
+                border-bottom: 1px solid #333;
+            }
+
+            .menu-toggle:checked ~ .nav-links { max-height: 400px; }
+            .game-intro { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container nav-wrapper">
+            <div class="logo" onclick="switchTab('home')">
+                MOSSCAT<span>STUDIOS</span>
+            </div>
+            
+            <input type="checkbox" id="menu-toggle" class="menu-toggle">
+            <label for="menu-toggle" class="hamburger">☰</label>
+
+            <nav class="nav-links">
+                <button class="nav-btn active" onclick="switchTab('home')">HOME</button>
+                <button class="nav-btn" onclick="switchTab('campsight')">CAMPSIGHT</button>
+                <!-- New Viridis Button -->
+                <button class="nav-btn" onclick="switchTab('viridis')" style="color: var(--viridis-slime);">VIRIDIS</button>
+                <button class="nav-btn" onclick="switchTab('team')">THE TEAM</button>
+                <button class="nav-btn" onclick="switchTab('contact')">CONTACT</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- TAB: HOME -->
+    <div id="tab-home" class="tab-content active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 style="font-size: 2rem; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+                    MOSSCAT STUDIOS
+                </h1>
+              
+                <p style="margin-bottom: 20px;">
+                    We make silly games for silly people. 
+                </p>
+                <p style="font-weight: bold; text-transform: uppercase; color: var(--alert-red);">
+                    > Current Status: WORKING HARD
+                </p>
+                <button class="pixel-btn" onclick="switchTab('campsight')">==> EXAMINE "CAMPSIGHT"</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- TAB: CAMPSIGHT -->
+    <div id="tab-campsight" class="tab-content">
+        <section class="game-section">
+            <div class="container">
+                <div class="text-center" style="margin-bottom: 40px; border: 1px solid #444; padding: 20px; background: #000;">
+                    <h2 style="font-size: 2.5rem; color: var(--fire-orange);">CampSight</h2>
+                    <p>A MULTIPLAYER ROAD TRIP INTO THE UNKNOWN.</p>
+                </div>
+
+                <div class="game-intro">
+                    <div class="game-text">
+                        <h3>Greetings, Camper.</h3>
+                        <p>Pack your bags and hop into the Company Assigned bus! You and your friends are tasked with documenting the local wildlife.</p>
+                        <br>
+                        <ul style="margin-left: 20px;">
+                            <li style="margin-bottom:10px;">➤ <strong>Open World FriendSlop:</strong> Anyone can drive (badly).</li>
+                            <li style="margin-bottom:10px;">➤ <strong>Photography:</strong> Find "HOTSPOTS" and snap pics.</li>
+                            <li style="margin-bottom:10px;">➤ <strong>Survival:</strong> Cook beans, avoid night horrors.</li>
+                            
+                        </ul>
+                        <div style="margin-top: 20px;">
+                            <a href="#" class="pixel-btn" onclick="alert('Steam page coming soon!')">WISHLIST ON STEAM</a>
+                        </div>
+                    </div>
+
+                    <!-- S.H.A.T. Tablet -->
+                    <div class="shat-tablet">
+                        <div style="background: #333; color: #fff; padding: 5px; font-size: 0.8rem; text-align: center;">
+                            -- S.H.A.T. [SH] is SIMULATING with YOU [UE] --
+                        </div>
+                        <div class="shat-screen">
+                            <span class="pester-text">
+                                <span class="pester-handle" style="color: #00ff00;">SH:</span> 
+                                H-H3LL0... [[EMPLOYEES]]...
+                            </span>
+                            <span class="pester-text">
+                                <span class="pester-handle" style="color: #00ff00;">SH:</span> 
+                                Y0UR QU0T4... F0R TH15 W33K 15... <span style="color: red;">[HIGH_V4LU3]</span>...
+                            </span>
+                            <span class="pester-text">
+                                <span class="pester-handle" style="color: #00ff00;">SH:</span> 
+                                IF Y0U F-F4IL... TO M33T TH3 D34DL1N3...
+                            </span>
+                            <span class="pester-text">
+                                <span class="pester-handle" style="color: #00ff00;">SH:</span> 
+                                TH1S D3V1C3 W1LL... <span class="shake" style="color: red;">[[OBLITERATE]]</span>... 
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-center">VISUAL LOGS</h3>
+                <div class="screenshot-grid">
+                    <div class="screenshot-placeholder">
+                        <div class="icon-large"></div>
+                        <span>THE BUS</span>
+                    </div>
+                    <div class="screenshot-placeholder" style="background: #050505;">
+                        <div class="icon-large"></div>
+                        <span>NIGHT ATTACK</span>
+                    </div>
+                    <div class="screenshot-placeholder">
+                        <div class="icon-large"></div>
+                        <span>RARE FIND</span>
+                    </div>
+                    <div class="screenshot-placeholder" style="background: #220000;">
+                        <div class="icon-large"></div>
+                        <span>GAME OVER</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TAB: VIRIDIS (NEW) -->
+    <div id="tab-viridis" class="tab-content">
+        <section class="viridis-section">
+            <div class="container">
+                <div class="text-center" style="margin-bottom: 40px;">
+                    <!-- Big Green Moldy Question Mark -->
+                    <div class="viridis-q-mark">?</div>
+                    <h2 style="font-size: 3rem; color: var(--viridis-slime); text-transform: uppercase; letter-spacing: 5px;">VIRIDIS</h2>
+                    <p style="color: #98fb98;">(Project Green)</p>
+                </div>
+
+                <div class="lore-box">
+                    <h3 style="color: var(--viridis-slime); border-bottom: 1px solid var(--viridis-mold); padding-bottom: 10px;">THE DEPTHS AWAKEN</h3>
+                    <p>The year is <strong>2027</strong>. We took too much. We stripped the flesh from our planet to build our cities, and now... the Earth is taking it back.</p>
+                    <br>
+                    <p>From the bleeding depths, they rise. Monsters long asleep, festering in the dark. The <strong>"Safe Zones"</strong> are rotting from the inside out with corruption.</p>
+                    <br>
+                    <p style="font-style: italic;">"Viridis" — Green. Youthful. Blooming. The restoration will be violent.</p>
+                </div>
+
+                <div class="viridis-grid" style="display: grid; grid-template-columns: 1fr; gap: 30px;">
+                    <!-- Lore Card 1 -->
+                    <div class="lore-card" style="border: 1px solid var(--viridis-mold); padding: 20px; background: rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff;">THE FIVE METEORS</h4>
+                        <p>Celestial seeds bringing life (and death). One fell on my house in <strong>Nearfield</strong>.</p>
+                        
+                    </div>
+                    
+                    <!-- Lore Card 2 -->
+                    <div class="lore-card" style="border: 1px solid var(--viridis-mold); padding: 20px; background: rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff;">THE SURVIVORS</h4>
+                        <ul style="list-style: none;">
+                            <li style="margin-bottom: 15px; border-left: 3px solid var(--viridis-slime); padding-left: 10px;">
+                                <strong style="color: var(--viridis-slime); font-size: 1.2rem;">MC (21)</strong><br>
+                                <span style="font-size: 0.9rem; color: #aaa;">A survivor of the First Impact. 19 when it started, 21 now. Favorite food: Lasagna.</span>
+                            </li>
+                            <li style="border-left: 3px solid var(--viridis-slime); padding-left: 10px;">
+                                <strong style="color: var(--viridis-slime); font-size: 1.2rem;">JUNE (24)</strong><br>
+                                <span style="font-size: 0.9rem; color: #aaa;">Strong-willed and unbroken. Mixed heritage, wears a bandage hidden under her hair. Do not ask her about it.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TAB: TEAM -->
+    <div id="tab-team" class="tab-content">
+        <section class="about-section">
+            <div class="container">
+                <h2 style="color: #fff;">THE TEAM</h2>
+                <p style="max-width: 600px; margin: 0 auto; color: #ccc;">
+                    
+                </p>
+
+                <div class="team-grid">
+                    <div class="dev-card">
+                        <div class="dev-avatar">
+                            <img src="bro.png" alt="bro" style="width: 80px; height: 80px;">
+                        </div>
+                        <h3>GrandDiJay</h3>
+                        <p style="color: var(--bucket-gray);">Solo Developer</p>
+                        <p style="font-size: 0.8rem; margin-top: 5px;">"i warned you about the physics bro"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TAB: CONTACT -->
+    <div id="tab-contact" class="tab-content">
+        <section class="contact-section">
+           
+
+                
+
+                <a href="https://twitter.com/MosscatStudios" class="social-link" style="margin-top: 40px; display: block; color: var(--text-main);">
+                    @MosscatStudios (X)
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Global Footer -->
+    <footer class="global-footer">
+        <div class="container">
+            <p>&copy; 2025 Mosscat Studios.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT FOR TABS -->
+    <script>
+        function switchTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById('tab-' + tabName).classList.add('active');
+
+            buttons.forEach(btn => {
+                if (btn.getAttribute('onclick').includes(tabName)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            document.getElementById('menu-toggle').checked = false;
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
